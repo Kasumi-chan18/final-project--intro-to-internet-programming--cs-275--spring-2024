@@ -1,32 +1,70 @@
 const gulp = require(`gulp`);
-const clean = require(`gulp-clean`);
+const babel = require(`gulp-babel`);
+const terser = require(`gulp-terser`);
+const eslint = require(`gulp-eslint`);
+const rename = require(`gulp-rename`);
+const del = require(`del`);
 
-//Clean task to remove 'prod' folder
-gulp.task(`clean`, function () {
-    return gulp.src(`prod`, { read: false, allowEmpty: true })
-        .pipe(clean());
-});
+// Paths
+const paths = {
+    src: {
+        js: `dev/js/app.js`,
+        html: `dev/html/index.html`,
+        css: `dev/css/style.css`
+    },
+    build: {
+        js: `prod/js/`,
+        html: `prod/`,
+        css: `prod/css/`
+    }
+};
 
-// Copy HTML task
-gulp.task(`html`, function () {
-    return gulp.src(`dev/html/index.html`)
+// Development Build
+gulp.task(`dev:html`, () => {
+    return gulp.src(paths.src.html)
         .pipe(gulp.dest(`prod`));
 });
 
-// Copy CSS task
-gulp.task(`css`, function () {
-    return gulp.src(`dev/css/*.css`)
-        .pipe(gulp.dest(`prod/css`));
+gulp.task(`dev:css`, () => {
+    return gulp.src(paths.src.css)
+        .pipe(gulp.dest(paths.build.css));
 });
 
-// Copy JS task
-gulp.task(`js`, function () {
-    return gulp.src(`dev/js/*.js`)
-        .pipe(gulp.dest(`prod/js`));
+gulp.task(`dev:js`, () => {
+    return gulp.src(paths.src.js)
+        .pipe(eslint())
+        .pipe(eslint.format())
+        .pipe(gulp.dest(paths.build.js));
 });
 
-// Default task for development
-gulp.task(`default`, gulp.series(`html`, `css`, `js`));
+gulp.task(`dev`, gulp.series(`dev:html`, `dev:css`, `dev:js`));
 
-// Production build tasks
-gulp.task(`build`, gulp.series(`clean`, `default`));
+// Production Build
+gulp.task(`clean`, () => {
+    return del(`prod`);
+});
+
+gulp.task(`build:html`, () => {
+    return gulp.src(paths.src.html)
+        .pipe(gulp.dest(`prod`));
+});
+
+gulp.task(`build:css`, () => {
+    return gulp.src(paths.src.css)
+        .pipe(gulp.dest(paths.build.css));
+});
+
+gulp.task(`build:js`, () => {
+    return gulp.src(paths.src.js)
+        .pipe(eslint())
+        .pipe(eslint.format())
+        .pipe(babel())
+        .pipe(terser())
+        .pipe(rename({ suffix: `.min` }))
+        .pipe(gulp.dest(paths.build.js));
+});
+
+gulp.task(`build`, gulp.series(`clean`, `build:html`, `build:css`, `build:js`));
+
+// Default task
+gulp.task(`default`, gulp.series(`dev`));
