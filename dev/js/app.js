@@ -1,6 +1,6 @@
+/* eslint-disable max-len */
 window.onload = () => {
     // Prompt user for the matrix size
-    const size = prompt("Enter the size of the matrix (greater than 1): ");
 
     // Ensure input is a valid integer than 1
     const isValidInput = input => {
@@ -21,7 +21,7 @@ window.onload = () => {
     // Print matrix
     const printMatrix = matrix => {
         matrix.forEach(row => {
-            console.log(row.join(" "));
+            console.log(row.join(` `));
         });
     };
 
@@ -34,20 +34,20 @@ window.onload = () => {
 
     // Main logic
     const main = async () => {
-        let userInput = prompt("Enter the size of the matrix (greater than 1): ");
+        let userInput = prompt(`Enter the size of the matrix (greater than 1): `);
 
         // Ensure valid input
         while (!isValidInput(userInput)){
-            userInput = prompt("Invalid input! Please enter an integer greater than 1");
+            userInput = prompt(`Invalid input! Please enter an integer greater than 1`);
         }
 
         const size = parseInt(userInput);
         const matrix = generateMatrix(size);
 
-        console.log("Original Matrix:");
+        console.log(`Original Matrix:`);
         printMatrix(matrix);
 
-        console.log("Flipped Matrix:");
+        console.log(`Flipped Matrix:`);
         printMatrix(flippedMatrix(matrix));
     };
 
