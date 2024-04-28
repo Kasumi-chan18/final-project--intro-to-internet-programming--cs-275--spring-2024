@@ -1,0 +1,17 @@
+{
+  "name": "final-project--intro-to-internet-programming--cs-275--spring-2024",
+  "version": "1.0.0",
+  "description": "This final project is about creating a single web page consisting of HTML, CSS, and JavaScript that prompts the user for the size of a matrix, then prints the matrix with values from 1–user input, then prints the matrix in reverse. The cells in the matrix along the diagonal from top right to bottom left should not be moved, since this is the axis along which the matrix will be reversed, or flipped.",
+  "main": "gulpfile.js",
+  "scripts": {
+    "test": "NIL"
+  },
+  "author": "Moyosoreoluwa Akinsulere",
+  "license": "ISC",
+  "devDependencies": {
+    "@babel/core": "^7.16.7",
+    "@babel/preset-env": "^7.16.7",
+    "gulp": "^4.0.2",
+    "gulp-clean": "^0.4.0"
+  }
+}
