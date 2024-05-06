@@ -1,70 +1,75 @@
 const gulp = require(`gulp`);
 const babel = require(`gulp-babel`);
-const terser = require(`gulp-terser`);
 const eslint = require(`gulp-eslint`);
 const rename = require(`gulp-rename`);
-const del = require(`del`);
+const sourcemaps = require(`gulp-sourcemaps`);
+const stylelint = require(`gulp-stylelint`);
+const uglify = require(`gulp-uglify`);
+const browserSync = require(`browser-sync`).create();
+const postcss = require(`gulp-postcss`);
+const autoprefixer = require(`autoprefixer`);
+const cssnano = require(`cssnano`);
 
-// Paths
-const paths = {
-    src: {
-        js: `dev/js/app.js`,
-        html: `dev/html/index.html`,
-        css: `dev/css/style.css`
-    },
-    build: {
-        js: `prod/js/`,
-        html: `prod/`,
-        css: `prod/css/`
-    }
-};
+// Development Task
+gulp.task(`dev`, function () {
+    browserSync.init({
+        server: {
+            baseDir: `./dev`,
+        },
+    });
 
-// Development Build
-gulp.task(`dev:html`, () => {
-    return gulp.src(paths.src.html)
-        .pipe(gulp.dest(`prod`));
+    gulp.watch(`./dev/css/*.css`, gulp.series(`lint-css`));
+    gulp.watch(`./dev/js/*.js`, gulp.series(`lint-js`));
+    gulp.watch(`./dev/*.html`).on(`change`, browserSync.reload);
 });
 
-gulp.task(`dev:css`, () => {
-    return gulp.src(paths.src.css)
-        .pipe(gulp.dest(paths.build.css));
+// CSS Lint Task
+gulp.task(`lint-css`, function () {
+    return gulp.src(`./dev/css/*.css`)
+        .pipe(stylelint({
+            reporters: [
+                { formatter: `string`, console: true }
+            ]
+        }));
 });
 
-gulp.task(`dev:js`, () => {
-    return gulp.src(paths.src.js)
+// JavaScript Lint Task
+gulp.task(`lint-js`, function () {
+    return gulp.src(`./dev/js/*.js`)
         .pipe(eslint())
         .pipe(eslint.format())
-        .pipe(gulp.dest(paths.build.js));
+        .pipe(eslint.failAfterError());
 });
 
-gulp.task(`dev`, gulp.series(`dev:html`, `dev:css`, `dev:js`));
-
-// Production Build
-gulp.task(`clean`, () => {
-    return del(`prod`);
-});
-
-gulp.task(`build:html`, () => {
-    return gulp.src(paths.src.html)
-        .pipe(gulp.dest(`prod`));
-});
-
-gulp.task(`build:css`, () => {
-    return gulp.src(paths.src.css)
-        .pipe(gulp.dest(paths.build.css));
-});
-
-gulp.task(`build:js`, () => {
-    return gulp.src(paths.src.js)
-        .pipe(eslint())
-        .pipe(eslint.format())
-        .pipe(babel())
-        .pipe(terser())
+// Production Task
+gulp.task(`build`, function () {
+    return gulp.src(`./dev/js/*.js`)
+        .pipe(sourcemaps.init())
+        .pipe(babel({
+            presets: [`@babel/preset-env`]
+        }))
+        .pipe(uglify())
         .pipe(rename({ suffix: `.min` }))
-        .pipe(gulp.dest(paths.build.js));
+        .pipe(sourcemaps.write(`.`))
+        .pipe(gulp.dest(`./prod/js`));
 });
 
-gulp.task(`build`, gulp.series(`clean`, `build:html`, `build:css`, `build:js`));
+// CSS Production Task
+gulp.task(`build-css`, function () {
+    return gulp.src(`./dev/css/*.css`)
+        .pipe(postcss([autoprefixer(), cssnano()]))
+        .pipe(rename({ suffix: `.min` }))
+        .pipe(gulp.dest(`./prod/css`));
+});
 
-// Default task
+// Copy HTML Task
+gulp.task(`copy-html`, function () {
+    return gulp.src(`./dev/*.html`)
+        .pipe(gulp.dest(`./prod`));
+});
+
+// Default Task
 gulp.task(`default`, gulp.series(`dev`));
+
+// Production Build Task
+gulp.task(`prod`, gulp.parallel(`build`, `build-css`, `copy-html`));
