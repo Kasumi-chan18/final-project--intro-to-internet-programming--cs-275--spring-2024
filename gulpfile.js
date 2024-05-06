@@ -20,7 +20,7 @@ gulp.task(`dev`, function () {
 
     gulp.watch(`./dev/css/*.css`, gulp.series(`lint-css`));
     gulp.watch(`./dev/js/*.js`, gulp.series(`lint-js`));
-    gulp.watch(`./dev/*.html`).on(`change`, browserSync.reload);
+    gulp.watch(`./dev/html/*.html`).on(`change`, browserSync.reload);
 });
 
 // CSS Lint Task
@@ -64,7 +64,7 @@ gulp.task(`build-css`, function () {
 
 // Copy HTML Task
 gulp.task(`copy-html`, function () {
-    return gulp.src(`./dev/*.html`)
+    return gulp.src(`./dev/html/*.html`)
         .pipe(gulp.dest(`./prod`));
 });
 
