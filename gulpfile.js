@@ -11,38 +11,41 @@ const autoprefixer = require(`autoprefixer`);
 const cssnano = require(`cssnano`);
 
 // Development Task
-gulp.task(`dev`, function () {
+let devTask = function () {
     browserSync.init({
         server: {
-            baseDir: `./dev`,
+            baseDir: `./dev/html`, // Corrected baseDir
         },
     });
 
     gulp.watch(`./dev/css/*.css`, gulp.series(`lint-css`));
     gulp.watch(`./dev/js/*.js`, gulp.series(`lint-js`));
-    gulp.watch(`./dev/html/*.html`).on(`change`, browserSync.reload);
-});
+    gulp.watch(`./dev/*.html`).on(`change`, browserSync.reload);
+};
+gulp.task(`dev`, devTask);
 
 // CSS Lint Task
-gulp.task(`lint-css`, function () {
+let lintCssTask = function () {
     return gulp.src(`./dev/css/*.css`)
         .pipe(stylelint({
             reporters: [
                 { formatter: `string`, console: true }
             ]
         }));
-});
+};
+gulp.task(`lint-css`, lintCssTask);
 
 // JavaScript Lint Task
-gulp.task(`lint-js`, function () {
+let lintJsTask = function () {
     return gulp.src(`./dev/js/*.js`)
         .pipe(eslint())
         .pipe(eslint.format())
         .pipe(eslint.failAfterError());
-});
+};
+gulp.task(`lint-js`, lintJsTask);
 
 // Production Task
-gulp.task(`build`, function () {
+let buildTask = function () {
     return gulp.src(`./dev/js/*.js`)
         .pipe(sourcemaps.init())
         .pipe(babel({
@@ -52,21 +55,24 @@ gulp.task(`build`, function () {
         .pipe(rename({ suffix: `.min` }))
         .pipe(sourcemaps.write(`.`))
         .pipe(gulp.dest(`./prod/js`));
-});
+};
+gulp.task(`build`, buildTask);
 
 // CSS Production Task
-gulp.task(`build-css`, function () {
+let buildCssTask = function () {
     return gulp.src(`./dev/css/*.css`)
         .pipe(postcss([autoprefixer(), cssnano()]))
         .pipe(rename({ suffix: `.min` }))
         .pipe(gulp.dest(`./prod/css`));
-});
+};
+gulp.task(`build-css`, buildCssTask);
 
 // Copy HTML Task
-gulp.task(`copy-html`, function () {
-    return gulp.src(`./dev/html/*.html`)
+let copyHtmlTask = function () {
+    return gulp.src(`./dev/*.html`)
         .pipe(gulp.dest(`./prod`));
-});
+};
+gulp.task(`copy-html`, copyHtmlTask);
 
 // Default Task
 gulp.task(`default`, gulp.series(`dev`));
