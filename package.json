@@ -1,0 +1,26 @@
+{
+  "name": "final-project--intro-to-internet-programming--cs-275--spring-2024",
+  "version": "1.0.0",
+  "description": "This project is about creating a single web page consisting of HTML, CSS and JavaScript that prompts the user for the size of a matrix, then prints the matrix with values from 1-user input, then prints the matrix in reverse.",
+  "main": "gulpfile.js",
+  "scripts": {
+    "test": "NIL"
+  },
+  "author": "Moyosoreoluwa Akinsulere",
+  "license": "ISC",
+  "devDependencies": {
+    "@babel/core": "^7.15.8",
+    "@babel/preset-env": "^7.15.8",
+    "autoprefixer": "^10.4.2",
+    "browser-sync": "^2.27.5",
+    "cssnano": "^5.0.9",
+    "gulp": "^4.0.2",
+    "gulp-babel": "^8.0.0",
+    "gulp-eslint": "^6.0.0",
+    "gulp-postcss": "^10.0.0",
+    "gulp-rename": "^2.0.0",
+    "gulp-sourcemaps": "^3.0.0",
+    "gulp-stylelint": "^13.0.0",
+    "gulp-uglify": "^3.0.2"
+  }
+}
