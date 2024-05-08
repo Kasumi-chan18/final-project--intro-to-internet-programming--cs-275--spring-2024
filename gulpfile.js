@@ -18,15 +18,15 @@ let devTask = function () {
         },
     });
 
-    gulp.watch(`./dev/css/*.css`, gulp.series(`lint-css`));
-    gulp.watch(`./dev/js/*.js`, gulp.series(`lint-js`));
-    gulp.watch(`./dev/*.html`).on(`change`, browserSync.reload);
+    gulp.watch(`./dev/css/style.css`, gulp.series(`lint-css`));
+    gulp.watch(`./dev/js/app.js`, gulp.series(`lint-js`));
+    gulp.watch(`./dev/html/index.html`).on(`change`, browserSync.reload);
 };
 gulp.task(`dev`, devTask);
 
 // CSS Lint Task
 let lintCssTask = function () {
-    return gulp.src(`./dev/css/*.css`)
+    return gulp.src(`./dev/css/style.css`)
         .pipe(stylelint({
             reporters: [
                 { formatter: `string`, console: true }
@@ -37,7 +37,7 @@ gulp.task(`lint-css`, lintCssTask);
 
 // JavaScript Lint Task
 let lintJsTask = function () {
-    return gulp.src(`./dev/js/*.js`)
+    return gulp.src(`./dev/js/app.js`)
         .pipe(eslint())
         .pipe(eslint.format())
         .pipe(eslint.failAfterError());
@@ -46,7 +46,7 @@ gulp.task(`lint-js`, lintJsTask);
 
 // Production Task
 let buildTask = function () {
-    return gulp.src(`./dev/js/*.js`)
+    return gulp.src(`./dev/js/app.js`)
         .pipe(sourcemaps.init())
         .pipe(babel({
             presets: [`@babel/preset-env`]
@@ -60,7 +60,7 @@ gulp.task(`build`, buildTask);
 
 // CSS Production Task
 let buildCssTask = function () {
-    return gulp.src(`./dev/css/*.css`)
+    return gulp.src(`./dev/css/style.css`)
         .pipe(postcss([autoprefixer(), cssnano()]))
         .pipe(rename({ suffix: `.min` }))
         .pipe(gulp.dest(`./prod/css`));
@@ -69,7 +69,7 @@ gulp.task(`build-css`, buildCssTask);
 
 // Copy HTML Task
 let copyHtmlTask = function () {
-    return gulp.src(`./dev/*.html`)
+    return gulp.src(`./dev/html/index.html`)
         .pipe(gulp.dest(`./prod`));
 };
 gulp.task(`copy-html`, copyHtmlTask);
